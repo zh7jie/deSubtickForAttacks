@@ -1,3 +1,5 @@
+# 这版无法在游戏内工作因为cs2默认获取鼠标原始输入
+# This version cannot work within the game because CS2 obtains raw mouse input by default
 # deSubtickForAttacks
 delete cs2's stupid subtick for attacks in a stupid way
 ## 概述
