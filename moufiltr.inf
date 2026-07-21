@@ -1,0 +1,220 @@
+;============================================================
+; moufiltr.inf
+; USB HID Mouse Upper Filter Driver
+; Based on Microsoft moufiltr sample
+;============================================================
+
+
+[Version]
+
+Signature="$Windows NT$"
+
+Class=Mouse
+
+ClassGuid={4D36E96F-E325-11CE-BFC1-08002BE10318}
+
+Provider=%Provider%
+
+DriverVer=07/21/2026,1.0.0.0
+
+CatalogFile.ntamd64=moufiltr.cat
+
+PnpLockdown=1
+
+
+
+;============================================================
+; Destination
+;============================================================
+
+[DestinationDirs]
+
+DefaultDestDir=12
+MouFilter_CopyFiles=12
+
+
+
+;============================================================
+; Architecture
+;============================================================
+
+[Manufacturer]
+
+%Mfg%=Mfg,NTamd64
+
+
+
+;============================================================
+; 修改这里！！！
+;
+; 填你的鼠标 Hardware ID
+;
+; 例如：
+; HID\VID_04F3&PID_026F
+;
+;============================================================
+
+
+[Mfg.NTamd64]
+
+%Mouse.DeviceDesc%=MouFilter_Install,HID\VID_04F3&PID_026F
+
+
+
+;============================================================
+; Install
+;============================================================
+
+[MouFilter_Install.NT]
+
+
+Include=MSMOUSE.INF
+
+Needs=HID_Mouse_Inst.NT
+
+
+CopyFiles=MouFilter_CopyFiles
+
+
+
+
+;============================================================
+; Hardware install
+; 添加 UpperFilter
+;============================================================
+
+
+[MouFilter_Install.NT.HW]
+
+
+Include=MSMOUSE.INF
+
+Needs=HID_Mouse_Inst.NT.Hw
+
+AddReg=MouFilter_AddReg
+
+
+
+
+[MouFilter_AddReg]
+
+
+HKR,,"UpperFilters",0x00010000,"MouFilter"
+
+
+
+
+
+;============================================================
+; Copy driver
+;============================================================
+
+
+[MouFilter_CopyFiles]
+
+
+moufiltr.sys
+
+
+
+
+
+;============================================================
+; Service
+;============================================================
+
+
+[MouFilter_Install.NT.Services]
+
+
+Include=MSMOUSE.INF
+
+Needs=HID_Mouse_Inst.NT.Services
+
+AddService=MouFilter,0x00000002,MouFilter_Service
+
+
+
+
+[MouFilter_Service]
+
+
+DisplayName=%MouFilter.SvcDesc%
+
+ServiceType=1
+
+StartType=3
+
+ErrorControl=1
+
+ServiceBinary=%12%\moufiltr.sys
+
+LoadOrderGroup="Pointer Port"
+
+
+
+
+
+;============================================================
+; KMDF
+;============================================================
+
+
+[MouFilter_Install.NT.Wdf]
+
+
+KmdfService=MouFilter,MouFilter_Wdf
+
+
+
+
+[MouFilter_Wdf]
+
+
+KmdfLibraryVersion=1.33
+
+
+
+
+
+;============================================================
+; Source
+;============================================================
+
+
+[SourceDisksNames]
+
+
+1=%DiskName%
+
+
+
+[SourceDisksFiles]
+
+
+moufiltr.sys=1
+
+
+
+
+
+;============================================================
+; Strings
+;============================================================
+
+
+[Strings]
+
+
+Provider="MyCompany"
+
+Mfg="MyCompany"
+
+
+Mouse.DeviceDesc="USB HID Mouse Filter"
+
+
+MouFilter.SvcDesc="Mou Filter Driver"
+
+
+DiskName="MouFilter Driver Disk"
